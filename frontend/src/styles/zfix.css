@@ -1,0 +1,14 @@
+
+/* Force Radix popper content above dialogs */
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+}
+
+/* shadcn/ui Select/Popover fallback classes */
+.select-content, .popover-content, .dropdown-content {
+  z-index: 9999 !important;
+}
+
+/* Ensure Dialog stays above page content */
+[data-state="open"].dialog-overlay, .dialog-overlay { z-index: 60 !important; }
+[data-state="open"].dialog-content, .dialog-content { z-index: 61 !important; }

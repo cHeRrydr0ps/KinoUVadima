@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Новая заявка №{{ order_id }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f1f1f; line-height: 1.45; }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px; background: #ffffff; }
+    .header { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    .highlight { background: #f4f6fb; padding: 12px 16px; border-radius: 8px; margin: 16px 0; }
+    .footer { margin-top: 32px; font-size: 13px; color: #5f5f5f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Новая заявка на покупку фильма</div>
+    <p>Поступила заявка №{{ order_id }} от {{ created_at }}.</p>
+    <div class="highlight">
+      <p><strong>Покупатель:</strong> {{ full_name }} ({{ user_email }})</p>
+      {% if user_inn %}
+      <p><strong>ИНН:</strong> {{ user_inn }}</p>
+      {% endif %}
+      <p><strong>Фильм:</strong> «{{ movie_title }}» (ID {{ movie_id }})</p>
+      <p><strong>Сумма:</strong> {{ amount }} {{ currency }}</p>
+      <p><strong>Способ оплаты:</strong> {% if payment_method == 'phone_transfer' %}перевод на телефон{% else %}счёт на оплату{% endif %}</p>
+    </div>
+    {% if customer_comment %}
+    <p><strong>Комментарий пользователя:</strong> <span style="white-space: pre-line;">{{ customer_comment }}</span></p>
+    {% endif %}
+    <p><strong>Подтверждение оплаты:</strong> Пожалуйста, попросите клиента отправить чек или платежное поручение{% if has_payment_admin_contact %} на <a href="mailto:{{ payment_admin_mailto }}">{{ payment_admin_contact }}</a>{% endif %}.</p>
+    <p>Перейдите в панель администратора, чтобы обработать заявку: <a href="{{ admin_portal_url }}">Модерация покупок</a></p>
+    <div class="footer">Письмо отправлено автоматически. Пожалуйста, не отвечайте на него.</div>
+  </div>
+</body>
+</html>

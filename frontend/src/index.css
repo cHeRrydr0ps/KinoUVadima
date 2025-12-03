@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Theme tokens in HSL triplets (for hsl(var(--token))) --- */
+:root {
+  --background: 0 0% 6%;
+  --foreground: 0 0% 98%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 70%;
+  --popover: 0 0% 6%;
+  --popover-foreground: 0 0% 98%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 98%;
+  --border: 0 0% 20%;
+  --input: 0 0% 12%;
+  --ring: 0 0% 50%;
+  --primary: 355 93% 48%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 18%;
+  --secondary-foreground: 0 0% 98%;
+  --destructive: 0 85% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --accent: 0 0% 20%;
+  --accent-foreground: 0 0% 98%;
+  --radius: 0.75rem;
+  --cinema-red: #E31C25;
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { 
+    @apply bg-background text-foreground; 
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  }
+
+  /* Ensure default form controls follow theme even without utility classes */
+  input, textarea, select {
+    @apply bg-background text-foreground border-input;
+  }
+  ::placeholder {
+    @apply text-muted-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-cinema-gradient {
+    background:
+      radial-gradient(120% 120% at 50% 0%, rgba(227,28,37,0.18) 0%, rgba(0,0,0,0) 40%),
+      linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0) 100%);
+  }
+}
+
+/* === Modal scrollbars === */
+.modal-scroll::-webkit-scrollbar { width: 10px; }
+.modal-scroll::-webkit-scrollbar-track { background: #0f1216; border-radius: 10px; }
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: #2a2f37; border-radius: 10px; border: 2px solid transparent; background-clip: content-box;
+}
+.modal-scroll:hover::-webkit-scrollbar-thumb { background: #3a414b; }
+/* Firefox */
+.modal-scroll { scrollbar-color: #2a2f37 #0f1216; scrollbar-width: thin; }

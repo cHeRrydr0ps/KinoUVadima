@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Новая регистрация</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background-color: #f4f4f4; padding: 15px; border-radius: 5px; }
+        .content { margin: 20px 0; }
+        .user-info { background-color: #e8f4fd; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .footer { margin-top: 30px; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>🔔 Новая регистрация пользователя</h2>
+    </div>
+    
+    <div class="content">
+        <p>Здравствуйте!</p>
+        <p>В системе зарегистрировался новый пользователь:</p>
+        
+        <div class="user-info">
+            <strong>Данные пользователя:</strong><br>
+            <strong>Имя:</strong> {{ user_name }}<br>
+            <strong>Email:</strong> {{ user_email }}<br>
+            <strong>ИНН:</strong> {{ user_inn }}<br>
+            <strong>Дата регистрации:</strong> {{ registration_date }}
+        </div>
+        
+        <p>Для модерации регистрации перейдите в админ панель.</p>
+    </div>
+    
+    <div class="footer">
+        <p>Это автоматическое уведомление от системы.</p>
+    </div>
+</body>
+</html>

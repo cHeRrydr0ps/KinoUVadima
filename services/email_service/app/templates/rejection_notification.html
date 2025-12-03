@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Регистрация отклонена</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h2 style="color: #dc3545; border-bottom: 2px solid #dc3545; padding-bottom: 10px;">❌ Регистрация отклонена</h2>
+        
+        <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 0; color: #721c24;">
+                <strong>Здравствуйте, {{ user_name }}!</strong>
+            </p>
+        </div>
+        
+        <p style="color: #333; line-height: 1.6;">
+            К сожалению, ваша заявка на регистрацию в системе была отклонена администратором.
+        </p>
+        
+        {% if reason %}
+        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h4 style="margin: 0 0 10px 0; color: #856404;">📝 Причина отклонения:</h4>
+            <p style="margin: 0; color: #856404; font-style: italic;">{{ reason }}</p>
+        </div>
+        {% endif %}
+        
+        <div style="background-color: #e2f3ff; border: 1px solid #b8daff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h4 style="margin: 0 0 10px 0; color: #004085;">💡 Что можно сделать?</h4>
+            <ul style="margin: 0; padding-left: 20px; color: #004085;">
+                <li>Ознакомьтесь с причиной отклонения выше</li>
+                <li>Устраните указанные проблемы</li>
+                <li>Попробуйте зарегистрироваться снова</li>
+                <li>Обратитесь в службу поддержки за помощью</li>
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ register_url }}" 
+               style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                🔄 Попробовать снова
+            </a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 0.9em;">
+            <p>📧 Если у вас есть вопросы, свяжитесь с нами</p>
+            <p>С уважением, команда поддержки</p>
+        </div>
+    </div>
+</body>
+</html>

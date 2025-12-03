@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  gateway:
+    volumes:
+      - ./gateway/app.dev.conf:/etc/nginx/conf.d/app.conf:ro
+
+  frontend_dev:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: [ "sh", "-lc", "npm ci && npm run dev -- --host 0.0.0.0" ]
+    ports:
+      - "5173:5173"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

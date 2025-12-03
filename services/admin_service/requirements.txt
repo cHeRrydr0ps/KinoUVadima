@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy[asyncio]
+asyncpg
+alembic
+psycopg2-binary
+dotenv
+httpx
+pydantic[email]
+python-slugify
+python-jose
+redis[hiredis]>=4.2.0

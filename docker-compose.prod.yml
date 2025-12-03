@@ -1,0 +1,173 @@
+version: "3.9"
+
+networks:
+  backend:
+
+volumes:
+  db_auth_data:
+  db_admin_data:
+  db_payment_data:
+  letsencrypt_certs:
+  letsencrypt_www:
+
+services:
+  db_auth:
+    image: postgres:15
+    container_name: db_auth_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_AUTH_SERVICE}
+      POSTGRES_USER: ${POSTGRES_USER_AUTH_SERVICE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_AUTH_SERVICE}
+    volumes:
+      - db_auth_data:/var/lib/postgresql/data
+    networks: [ backend ]
+    # Не открываем порты наружу - только internal network
+    expose:
+      - "5432"
+
+  db_admin:
+    image: postgres:15
+    container_name: db_admin_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_ADMIN_SERVICE}
+      POSTGRES_USER: ${POSTGRES_USER_ADMIN_SERVICE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_ADMIN_SERVICE}
+    volumes:
+      - db_admin_data:/var/lib/postgresql/data
+    networks: [ backend ]
+    expose:
+      - "5432"
+
+  db_payment:
+    image: postgres:15
+    container_name: db_payment_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_PAYMENTS}
+      POSTGRES_USER: ${POSTGRES_USER_PAYMENTS}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_PAYMENTS}
+    volumes:
+      - db_payment_data:/var/lib/postgresql/data
+    networks: [ backend ]
+    expose:
+      - "5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_prod
+    restart: always
+    networks: [ backend ]
+
+  auth_service:
+    build: ./services/auth_service
+    container_name: auth_service_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER_AUTH_SERVICE}:${POSTGRES_PASSWORD_AUTH_SERVICE}@db_auth:5432/${POSTGRES_DB_AUTH_SERVICE}
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+    depends_on: [ db_auth ]
+    networks: [ backend ]
+
+  admin_service:
+    build: ./services/admin_service
+    container_name: admin_service_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER_ADMIN_SERVICE}:${POSTGRES_PASSWORD_ADMIN_SERVICE}@db_admin:5432/${POSTGRES_DB_ADMIN_SERVICE}
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+      AUTH_BASE: ${AUTH_SERVICE_URL}
+      TMDB_API_KEY: ${TMDB_API_KEY}
+    depends_on: [ db_admin, auth_service ]
+    networks: [ backend ]
+
+  content_service:
+    build: ./services/content_service
+    container_name: content_service_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER_ADMIN_SERVICE}:${POSTGRES_PASSWORD_ADMIN_SERVICE}@db_admin:5432/${POSTGRES_DB_ADMIN_SERVICE}
+    depends_on: [ db_admin ]
+    networks: [ backend ]
+
+  bff_service:
+    build: ./services/bff_service
+    container_name: bff_service_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      ADMIN_SERVICE_URL: ${ADMIN_SERVICE_URL}
+      CONTENT_SERVICE_URL: ${CONTENT_SERVICE_URL}
+      PAYMENT_SERVICE_URL: ${PAYMENT_SERVICE_URL}
+      TMDB_BEARER: ${TMDB_BEARER_TOKEN}
+      TMDB_API_KEY: ${TMDB_API_KEY}
+      TMDB_BASE_URL: ${TMDB_BASE_URL}
+    depends_on: [ auth_service, admin_service, content_service, payment_service ]
+    networks: [ backend ]
+
+  email_service:
+    build: ./services/email_service
+    container_name: email_service_prod
+    restart: always
+    env_file: [ ./.env ]
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8003"]
+    depends_on: [ redis ]
+    networks: [ backend ]
+
+  email_worker:
+    build: ./services/email_service
+    container_name: email_worker_prod
+    restart: always
+    env_file: [ ./.env ]
+    command: ["celery", "-A", "app.worker_main:celery_app", "worker", "--loglevel=info", "-Q", "emails"]
+    depends_on: [ redis ]
+    networks: [ backend ]
+
+  payment_service:
+    build: ./services/payment_service
+    container_name: payment_service_prod
+    restart: always
+    env_file: [ ./.env ]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER_PAYMENTS}:${POSTGRES_PASSWORD_PAYMENTS}@db_payment:5432/${POSTGRES_DB_PAYMENTS}
+      SYNC_DATABASE_URL: postgresql://${POSTGRES_USER_PAYMENTS}:${POSTGRES_PASSWORD_PAYMENTS}@db_payment:5432/${POSTGRES_DB_PAYMENTS}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      SUBSCRIPTION_SERVICE_URL: ${SUBSCRIPTION_SERVICE_URL}
+    depends_on: [ db_payment, auth_service ]
+    networks: [ backend ]
+
+  gateway:
+    image: nginx:1.25-alpine
+    container_name: gateway_prod
+    restart: always
+    depends_on: [ bff_service ]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html:ro
+      - ./gateway/app.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - letsencrypt_certs:/etc/letsencrypt:ro
+      - letsencrypt_www:/var/www/certbot:ro
+    networks: [ backend ]
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot_prod
+    volumes:
+      - letsencrypt_certs:/etc/letsencrypt
+      - letsencrypt_www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
