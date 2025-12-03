@@ -27,11 +27,16 @@ async def startup_event():
     await init_redis()
     
     # Если таблица жанров пуста — один раз импортируем жанры из TMDB
-    async_session = get_async_sessionmaker()
-    async with async_session() as db:
-        count = await db.scalar(select(func.count(Genre.genre_id)))
-        if not count:
-            await import_genres_from_tmdb(db, language="ru-RU")
+    try:
+        async_session = get_async_sessionmaker()
+        async with async_session() as db:
+            count = await db.scalar(select(func.count(Genre.genre_id)))
+            if not count:
+                await import_genres_from_tmdb(db, language="ru-RU")
+                print("✅ Жанры успешно импортированы из TMDB")
+    except Exception as e:
+        print(f"⚠️  Не удалось импортировать жанры из TMDB: {e}")
+        print("⚠️  Сервис продолжит работу. Жанры можно добавить вручную через админку")
 
 
 # Кастомный OpenAPI — показываем в Swagger именно Bearer-авторизацию
