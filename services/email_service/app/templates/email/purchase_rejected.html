@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Заявка №{{ order_id }} отклонена</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f1f1f; line-height: 1.45; }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px; background: #ffffff; }
+    .header { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    .highlight { background: #fff3f0; padding: 12px 16px; border-radius: 8px; margin: 16px 0; }
+    .footer { margin-top: 32px; font-size: 13px; color: #5f5f5f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Здравствуйте, {{ full_name }}!</div>
+    <p>К сожалению, мы не смогли подтвердить оплату по заявке №{{ order_id }}.</p>
+    {% if admin_comment %}
+    <div class="highlight">
+      <p><strong>Комментарий администратора:</strong> <span style="white-space: pre-line;">{{ admin_comment }}</span></p>
+    </div>
+    {% endif %}
+    <p>Проверьте данные платежа и отправьте заявку ещё раз в личном кабинете (<a href="{{ user_portal_url }}">перейти</a>). Если возникнут вопросы, напишите нам.</p>
+    <div class="footer">Контакты поддержки: {{ support_email }}</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Оплата подтверждена — заявка №{{ order_id }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f1f1f; line-height: 1.45; }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px; background: #ffffff; }
+    .header { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    .highlight { background: #f4f6fb; padding: 12px 16px; border-radius: 8px; margin: 16px 0; }
+    .footer { margin-top: 32px; font-size: 13px; color: #5f5f5f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Здравствуйте, {{ full_name }}!</div>
+    <p>Оплата заявки №{{ order_id }} подтверждена.</p>
+    <div class="highlight">
+      <p><strong>Фильм:</strong> «{{ movie_title }}»</p>
+      <p><strong>Сумма:</strong> {{ amount }} {{ currency }}</p>
+    </div>
+    <p>Доступ к материалу открыт в личном кабинете в разделе «Мои фильмы» (<a href="{{ user_portal_url }}">перейти</a>).</p>
+    {% if admin_comment %}
+    <p><strong>Сообщение от администратора:</strong> <span style="white-space: pre-line;">{{ admin_comment }}</span></p>
+    {% endif %}
+    <p>Если вы не видите фильм в личном кабинете, обновите страницу или обратитесь в поддержку.</p>
+    <div class="footer">Поддержка: {{ support_email }}</div>
+  </div>
+</body>
+</html>

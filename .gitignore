@@ -1,0 +1,16 @@
+.idea/
+.env
+.env.*
+venv/
+**/__pycache__/
+*.py[cod]
+*.log
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+
+# Service-specific virtualenvs
+services/**/venv/
+services/**/__pycache__/

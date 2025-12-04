@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Регистрация одобрена</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background-color: #d4edda; padding: 15px; border-radius: 5px; border: 1px solid #c3e6cb; }
+        .content { margin: 20px 0; }
+        .success { color: #155724; background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .footer { margin-top: 30px; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>✅ Регистрация одобрена</h2>
+    </div>
+    
+    <div class="content">
+        <p>Здравствуйте, {{ user_name }}!</p>
+        
+        <div class="success">
+            <strong>Поздравляем!</strong><br>
+            Ваша регистрация в системе одобрена администратором.
+        </div>
+        
+        <p>Теперь вы можете войти в систему, используя ваши учетные данные:</p>
+        <ul>
+            <li><strong>Email:</strong> {{ user_email }}</li>
+            <li><strong>Пароль:</strong> тот, который вы указали при регистрации</li>
+        </ul>
+        
+        <p>Добро пожаловать в нашу систему!</p>
+    </div>
+    
+    <div class="footer">
+        <p>Если у вас есть вопросы, обратитесь в службу поддержки.</p>
+    </div>
+</body>
+</html>

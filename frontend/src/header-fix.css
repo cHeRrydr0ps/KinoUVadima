@@ -1,0 +1,48 @@
+:root { --header-h: 64px; }
+body.has-fixed-header { padding-top: var(--header-h); }
+@supports (padding-top: env(safe-area-inset-top)) {
+  body.has-fixed-header { padding-top: calc(var(--header-h) + env(safe-area-inset-top)); }
+}
+
+/* Custom radio buttons for filters */
+.filter-radio {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #4a5568;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.filter-radio:checked {
+  border-color: #dc2626;
+  background-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+.filter-radio:checked::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.filter-radio:hover {
+  border-color: #dc2626;
+  transform: scale(1.1);
+}
+
+.filter-radio:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
+}

@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Заявка №{{ order_id }} оформлена</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f1f1f; line-height: 1.45; }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px; background: #ffffff; }
+    .header { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    .highlight { background: #f4f6fb; padding: 12px 16px; border-radius: 8px; margin: 16px 0; }
+    .footer { margin-top: 32px; font-size: 13px; color: #5f5f5f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Здравствуйте, {{ full_name }}!</div>
+    <p>Мы зарегистрировали заявку №{{ order_id }} на фильм «{{ movie_title }}» от {{ created_at }}.</p>
+    <div class="highlight">
+      <p><strong>Сумма к оплате:</strong> {{ amount }} {{ currency }}</p>
+      {% if discount_percent %}
+      <p><strong>Скидка:</strong> {{ discount_percent }}%</p>
+      {% endif %}
+      <p><strong>Способ оплаты:</strong> {% if payment_method == 'phone_transfer' %}перевод на телефон{% else %}счёт на оплату{% endif %}</p>
+    </div>
+    {% if payment_method == 'phone_transfer' %}
+    <p>Пожалуйста, выполните перевод на номер {{ payment_phone }} и прикрепите подтверждение в личном кабинете (<a href="{{ user_portal_url }}">перейти</a>).</p>
+    {% else %}
+    <p>Счёт на оплату доступен в личном кабинете (<a href="{{ user_portal_url }}">перейти</a>). После оплаты загрузите платёжное поручение, чтобы мы могли подтвердить заказ.</p>
+    {% if invoice_details %}
+    <div class="highlight">
+      <p><strong>Реквизиты для оплаты:</strong></p>
+      <p>{{ invoice_details }}</p>
+    </div>
+    {% endif %}
+    {% endif %}
+    <p>Пожалуйста, отправьте чек или платежное поручение{% if has_payment_admin_contact %} на <a href="mailto:{{ payment_admin_mailto }}">{{ payment_admin_contact }}</a>{% endif %}.</p>
+    {% if customer_comment %}
+    <p><strong>Ваш комментарий:</strong> <span style="white-space: pre-line;">{{ customer_comment }}</span></p>
+    {% endif %}
+    <p>После подтверждения оплаты фильм появится в разделе «Мои фильмы».</p>
+    <div class="footer">
+      Если возникнут вопросы, напишите нам на {{ support_email }}.
+    </div>
+  </div>
+</body>
+</html>

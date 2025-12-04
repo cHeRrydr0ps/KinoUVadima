@@ -1,0 +1,10 @@
+.radix-portal, .select-content, .popover-content, .dropdown-content, .combobox-content, .cmdk-overlay {
+  z-index: 60;
+  position: relative;
+}
+.DialogOverlay, .dialog-overlay {
+  z-index: 50;
+}
+.DialogContent, .dialog-content {
+  z-index: 55;
+}
